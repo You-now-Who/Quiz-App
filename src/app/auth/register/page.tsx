@@ -1,58 +1,90 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/_authModules/_authFunctions/AuthContext";
-import signIn from "@/_authModules/_authFunctions/signin";
+// import signIn from "@/app/_authModules/_authFunctions/signin";
+import { userSignUp } from "@/_authModules/_authFunctions/signup";
 
-function Login() {
+function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [phoneNum, setPhoneNum] = useState("");
+  const [name, setName] = useState("");
+  const [consent, setConsent] = useState(false);
 
-  const {user} = useAuthContext();
+  const { user } = useAuthContext();
+  const router = useRouter();
 
   useEffect(() => {
     if (user != null) router.push("/");
-    console.log(user);
   }, [user]);
 
-  const handleLogin = async (e: React.ChangeEvent<any>) => {
+  const handleRegister = async (e: React.ChangeEvent<any>) => {
     e.preventDefault();
 
-    const { result, error } = await signIn(email, password);
+    if (!consent) {
+      alert("Please agree to the terms and conditions");
+      return;
+    }
+
+    if (email == "" || password == "" || phoneNum == "" || name == "") {
+      alert("Please fill in all the fields");
+      return;
+    }
+
+    const { result, error } = await userSignUp(email, password, phoneNum, name);
     if (error) {
       return console.log(error);
     }
 
-    return router.push("/");
+    console.log(result)
+    // return router.push("/");
   };
 
   const handleEmailChange = (e: React.ChangeEvent<any>) => {
     setEmail(e.target.value);
+    // console.log(email);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<any>) => {
     setPassword(e.target.value);
   };
 
+  const handlePhoneNumChange = (e: React.ChangeEvent<any>) => {
+    setPhoneNum(e.target.value);
+  };
+
+  const handleConsentChange = (e: React.ChangeEvent<any>) => {
+    setConsent(e.target.checked);
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<any>) => {
+    setName(e.target.value);
+  };
+
   return (
     <>
-
       {/* <!-- component --> */}
       <div className="flex h-screen">
         {/* <!-- Left Pane --> */}
         <div className="hidden lg:flex items-center justify-center flex-1 bg-white text-black">
-          <div className="max-w-md text-center">
-          </div>
+          {/* <div className="max-w-md text-center"> */}
+          <img
+            src="https://vastphotos.com/files/uploads/photos/10150/high-resolution-nature-landscape-vast-xl.jpg"
+            alt="Your description"
+            className="w-full h-full object-cover "
+          />
+          {/* </div> */}
         </div>
         {/* <!-- Right Pane --> */}
         <div className="w-full bg-gray-100 lg:w-1/2 flex items-center justify-center">
           <div className="max-w-md w-full p-6">
             <h1 className="text-3xl font-semibold mb-6 text-black text-center">
-              Sign In
+              Sign Up
             </h1>
             <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
-              Welcome back to Equalize!
+              Join to Our Community with all time access and free{" "}
             </h1>
             <div className="mt-4 flex flex-col lg:flex-row items-center justify-between">
               <div className="w-full lg:w-1/2 mb-2 lg:mb-0">
@@ -83,7 +115,7 @@ function Login() {
                       d="m419.404 58.936-82.933 67.896C313.136 112.246 285.552 103.82 256 103.82c-66.729 0-123.429 42.957-143.965 102.724l-83.397-68.276h-.014C71.23 56.123 157.06 0 256 0c62.115 0 119.068 22.126 163.404 58.936z"
                     ></path>
                   </svg>{" "}
-                  Sign In with Google{" "}
+                  Sign Up with Google{" "}
                 </button>
               </div>
               <div className="w-full lg:w-1/2 ml-0 lg:ml-2">
@@ -99,15 +131,47 @@ function Login() {
                   >
                     <path d="M7.999 0C3.582 0 0 3.596 0 8.032a8.031 8.031 0 0 0 5.472 7.621c.4.074.546-.174.546-.387 0-.191-.007-.696-.011-1.366-2.225.485-2.695-1.077-2.695-1.077-.363-.928-.888-1.175-.888-1.175-.727-.498.054-.488.054-.488.803.057 1.225.828 1.225.828.714 1.227 1.873.873 2.329.667.072-.519.279-.873.508-1.074-1.776-.203-3.644-.892-3.644-3.969 0-.877.312-1.594.824-2.156-.083-.203-.357-1.02.078-2.125 0 0 .672-.216 2.2.823a7.633 7.633 0 0 1 2.003-.27 7.65 7.65 0 0 1 2.003.271c1.527-1.039 2.198-.823 2.198-.823.436 1.106.162 1.922.08 2.125.513.562.822 1.279.822 2.156 0 3.085-1.87 3.764-3.652 3.963.287.248.543.738.543 1.487 0 1.074-.01 1.94-.01 2.203 0 .215.144.465.55.386A8.032 8.032 0 0 0 16 8.032C16 3.596 12.418 0 7.999 0z"></path>
                   </svg>{" "}
-                  Sign In with Github{" "}
+                  Sign Up with Github{" "}
                 </button>
               </div>
             </div>
             <div className="mt-4 text-sm text-gray-600 text-center">
               <p>or with email</p>
             </div>
-            <form onSubmit={handleLogin} method="POST" className="space-y-4">
+            <form onSubmit={handleRegister} method="POST" className="space-y-4">
               {/* <!-- Your form elements go here --> */}
+              <div>
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={name}
+                  onChange={handleNameChange}
+                  className="mt-1 p-2 w-full border rounded-md text-gray-600 focus:text-gray-800 focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="phnum"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="number"
+                  id="phnum"
+                  name="phnum"
+                  value={phoneNum}
+                  onChange={handlePhoneNumChange}
+                  className="mt-1 p-2 w-full border rounded-md text-gray-800 focus:text-gray-800 focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
+                />
+              </div>
               <div>
                 <label
                   htmlFor="email"
@@ -121,7 +185,7 @@ function Login() {
                   name="email"
                   value={email}
                   onChange={handleEmailChange}
-                  className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
+                  className="mt-1 p-2 w-full border rounded-md text-gray-600 focus:text-gray-800 focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
                 />
               </div>
               <div>
@@ -137,23 +201,41 @@ function Login() {
                   name="password"
                   value={password}
                   onChange={handlePasswordChange}
-                  className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
+                  className="mt-1 p-2 w-full border rounded-md text-gray-600 focus:text-gray-800 focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
                 />
+              <div className="flex mt-4">
+                <input
+                type="checkbox"
+                id="consent"
+                name="consent"
+                checked={consent}
+                onChange={handleConsentChange}
+                className="form-checkbox h-4 w-4"
+                />
+                <label
+                  htmlFor="consent"
+                  className="block text-xs text-gray-500 mx-2"
+                >
+                  I agree to the <b>ToS</b> and <b>Privacy Rules</b> of this website.
+                </label>
+              </div>
+
               </div>
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"
+                  className="w-full bg-black text-white p-2 rounded-md focus:text-gray-500 hover:bg-gray-800 focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300 disabled:bg-gray-600 disabled:text-gray-300"
+                  disabled={!consent}
                 >
-                  Sign In
+                  Sign Up
                 </button>
               </div>
             </form>
             <div className="mt-4 text-sm text-gray-600 text-center">
               <p>
-                First time visiting?{" "}
-                <a href="/auth/register" className="text-black hover:underline">
-                  Register here
+                Already have an account?{" "}
+                <a href="/auth/login" className="text-black hover:underline">
+                  Login here
                 </a>
               </p>
             </div>
@@ -164,4 +246,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

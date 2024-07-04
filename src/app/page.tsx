@@ -1,5 +1,10 @@
+"use client";
+
+import { useAuthContext } from "@/_authModules/_authFunctions/AuthContext";
 
 export default function Home() {
+  const { user } = useAuthContext();
+  console.log(user.email);
   return (
     <>
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
