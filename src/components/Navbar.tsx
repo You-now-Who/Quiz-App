@@ -1,6 +1,20 @@
+"use client";
 import React from "react";
+import { useAuthContext } from "@/_authModules/_authFunctions/AuthContext";
+import { getAuth } from 'firebase/auth'
+import { useRouter } from 'next/navigation'
 
 function Navbar() {
+  const router = useRouter()
+  const user = useAuthContext()
+
+  const handleLogout = async (e: React.ChangeEvent<any>) => {
+    e.preventDefault();
+    const auth = getAuth();
+    await auth.signOut();
+    return router.push("/auth/login");
+  };
+
   return (
     <nav className="bg-gray-50 shadow-sm border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,8 +40,9 @@ function Navbar() {
                 <a
                   href="#"
                   className="text-flame-800 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-md font-bold"
+                  onClick={handleLogout}
                 >
-                  Links
+                  Log Out Duh
                 </a>
               </div>
             </div>

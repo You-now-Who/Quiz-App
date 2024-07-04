@@ -6,7 +6,7 @@ import { set } from "firebase/database";
 
 const auth = getAuth(firebase_app);
 
-export async function partnerSignUp(email, password, phoneNum, name) {
+export async function partnerSignUp(email: string, password: string, phoneNum: string, name: string) {
     let result = null,
         error = null;
     try {
@@ -36,7 +36,7 @@ export async function partnerSignUp(email, password, phoneNum, name) {
     return { result, error };
 }
 
-export async function userSignUp(email, password, phoneNum, name) {
+export async function userSignUp(email: string, password: string, phoneNum: string, name: string) {
     let result = null,
         error = null;
     try {
